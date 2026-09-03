@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HeyLaban | Tashkent Delivery</title>
+    <title>Sign Laban | Menu</title>
     <!-- Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --app-bg: #f4f6f9;
+            --app-bg: #f8f9fa;
             --card-bg: #ffffff;
             --text-dark: #1a1b1e;
             --text-muted: #828282;
-            --blue-accent: #0050ff;
-            --blue-light: #eef3ff;
+            --brand-color: #ff4757; /* A vibrant food-app red/pink */
+            --brand-light: #fff0f1;
             --border-color: #f0f0f0;
         }
 
@@ -34,34 +34,57 @@
             scroll-behavior: smooth;
         }
 
-        /* App Header */
+        /* App Header & Search */
         .header {
-            padding: 20px 15px 10px;
+            padding: 20px 15px 15px;
             background: var(--card-bg);
             position: sticky;
             top: 0;
             z-index: 30;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
 
         .header h1 {
             font-size: 24px;
             font-weight: 800;
-            color: var(--blue-accent);
+            color: var(--brand-color);
             letter-spacing: -0.5px;
+            margin-bottom: 12px;
         }
 
-        .header p {
-            font-size: 13px;
-            color: var(--text-muted);
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--app-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px 12px 40px;
+            font-size: 15px;
             font-weight: 500;
-            margin-top: 2px;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        /* Sticky Categories Slider */
+        .search-input:focus {
+            border-color: var(--brand-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Sticky Categories Navigation */
         .categories-wrapper {
             position: sticky;
-            top: 65px;
+            top: 96px; /* Below Header */
             background: var(--card-bg);
             z-index: 20;
             border-bottom: 1px solid var(--border-color);
@@ -82,108 +105,104 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            background: #f8f9fa;
+            background: #f1f3f5;
             padding: 8px 16px;
             border-radius: 20px;
             white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s ease;
-            border: 1px solid transparent;
         }
 
         .tab.active {
-            color: var(--blue-accent);
-            background: var(--blue-light);
-            border: 1px solid rgba(0, 80, 255, 0.2);
-            box-shadow: 0 2px 8px rgba(0, 80, 255, 0.1);
+            color: var(--brand-color);
+            background: var(--brand-light);
+            border: 1px solid rgba(255, 71, 87, 0.2);
         }
 
-        /* Menu Container */
+        /* Menu Container & Horizontal Scrolling Rows */
         .menu-container {
-            padding: 10px 15px;
+            padding: 10px 0;
         }
 
         .category-section {
             padding-top: 15px;
+            margin-bottom: 25px;
         }
 
         .category-title {
             font-size: 20px;
             font-weight: 800;
-            margin: 15px 0;
+            margin: 0 15px 15px;
             color: var(--text-dark);
+        }
+
+        /* The Horizontal Scroll Container for Cards */
+        .horizontal-scroll {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            overflow-x: auto;
+            padding: 0 15px 15px;
+            gap: 16px;
+            scroll-snap-type: x mandatory;
         }
 
-        /* Elevated Item Cards */
-        .item-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.02);
-            transition: transform 0.2s;
-        }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        .item-card:active {
-            transform: scale(0.98);
-        }
-
-        .item-info {
-            flex: 1;
+        /* Vertical Elevated Cards */
+        .vertical-card {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            min-width: 160px;
+            max-width: 160px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            scroll-snap-align: start;
+            border: 1px solid rgba(0,0,0,0.03);
+            overflow: hidden;
         }
 
-        .item-title {
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.3;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .price {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--blue-accent);
-        }
-
-        /* Image and Add Button */
-        .item-media {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            flex-shrink: 0;
-        }
-
-        .item-img {
+        .card-img {
             width: 100%;
-            height: 100%;
-            border-radius: 14px;
+            height: 140px;
             object-fit: cover;
             background-color: #f0f0f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
+        .card-info {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+            /* Truncate to 2 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-price {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--brand-color);
+            margin-bottom: 12px;
+        }
+
+        /* Add Button inside Vertical Card */
         .add-btn-wrapper {
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90px;
-            height: 38px;
+            width: 100%;
+            height: 36px;
             background: #fff;
             border: 1px solid #e4e4e4;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,9 +211,9 @@
         }
 
         .btn-add-text {
-            color: var(--blue-accent);
+            color: var(--brand-color);
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             width: 100%;
             height: 100%;
             display: flex;
@@ -214,28 +233,28 @@
         }
 
         .add-btn-wrapper.active {
-            border-color: var(--blue-accent);
-            background: var(--blue-light);
+            border-color: var(--brand-color);
+            background: var(--brand-light);
         }
 
         .add-btn-wrapper.active .btn-add-text { display: none; }
         .add-btn-wrapper.active .btn-controls { display: flex; }
 
         .ctrl-btn {
-            width: 32px;
+            width: 35px;
             height: 100%;
             background: transparent;
             border: none;
-            color: var(--blue-accent);
-            font-size: 20px;
+            color: var(--brand-color);
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
         }
 
         .ctrl-qty {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 800;
-            color: var(--blue-accent);
+            color: var(--brand-color);
         }
 
         /* Checkout Bar */
@@ -244,7 +263,7 @@
             bottom: 20px;
             left: 15px;
             right: 15px;
-            background: var(--blue-accent);
+            background: var(--brand-color);
             color: #fff;
             border-radius: 16px;
             padding: 16px 20px;
@@ -254,25 +273,25 @@
             transform: translateY(150%);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 50;
-            box-shadow: 0 10px 25px rgba(0, 80, 255, 0.4);
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4);
             cursor: pointer;
         }
 
-        .checkout-bar.visible {
-            transform: translateY(0);
-        }
-
+        .checkout-bar.visible { transform: translateY(0); }
         .cart-details { display: flex; flex-direction: column; }
         .cart-items-text { font-size: 12px; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px;}
-        .cart-total-text { font-size: 16px; font-weight: 800; margin-top: 2px;}
+        .cart-total-text { font-size: 18px; font-weight: 800; margin-top: 2px;}
         .checkout-action { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>HeyLaban</h1>
-        <p>Tashkent's Premium Dairy Experience</p>
+        <h1>Sign Laban</h1>
+        <div class="search-container">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search desserts..." oninput="searchMenu(this.value)">
+        </div>
     </div>
 
     <div class="categories-wrapper">
@@ -284,7 +303,7 @@
     <div class="checkout-bar" id="cartBar" onclick="checkout()">
         <div class="cart-details">
             <span class="cart-items-text" id="cartItemsDisplay">1 ITEM</span>
-            <span class="cart-total-text" id="cartTotalDisplay">0 UZS</span>
+            <span class="cart-total-text" id="cartTotalDisplay">0 ₹</span>
         </div>
         <div class="checkout-action">
             Checkout
@@ -298,116 +317,112 @@
         tg.ready();
         tg.setHeaderColor('#ffffff');
 
-        // Full Menu Data with UZS Pricing
+        // Sign Laban Menu Data mapped exactly from your prompt
         const menuData = [
             {
-                category: "Cakes",
-                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&q=80",
+                category: "Salankatia",
                 items: [
-                    { id: "c1", name: "Heba Dubai Chocolate medium", price: 120000 },
-                    { id: "c2", name: "Hiba Dubai Kinder medium", price: 130000 },
-                    { id: "c3", name: "Mini Kabsa", price: 85000 },
-                    { id: "c4", name: "Fazea Chocola Cake Small", price: 75000 },
-                    { id: "c5", name: "Khalthy Matilda Small", price: 90000 },
-                    { id: "c6", name: "ElKashkha Small", price: 80000 },
-                    { id: "c7", name: "El Metkandra Small", price: 85000 },
-                    { id: "c8", name: "Sankoreeta Large", price: 150000 }
+                    { id: "s1", name: "Nutella", price: 180, image: "https://www.signlaban.com/_next/static/media/Nutella.e0562cc6.png" },
+                    { id: "s2", name: "Pistachio Lotus", price: 220, image: "https://www.signlaban.com/_next/static/media/Pistachio%20Lotus.13fca7d2.png" },
+                    { id: "s3", name: "Nutella Lotus", price: 200, image: "https://www.signlaban.com/_next/static/media/Nutella%20Lotus.b7d2eb54.png" },
+                    { id: "s4", name: "Nutella Pistachio", price: 230, image: "https://www.signlaban.com/_next/static/media/Nutella%20Pistachio.900ab827.png" },
+                    { id: "s5", name: "Pistachio", price: 210, image: "https://www.signlaban.com/_next/static/media/Pistachio.d24553e1.png" },
+                    { id: "s6", name: "Mango", price: 170, image: "https://www.signlaban.com/_next/static/media/Mango.93fa7e84.png" },
+                    { id: "s7", name: "Lotus", price: 190, image: "https://www.signlaban.com/_next/static/media/Lotus.093f2265.png" }
                 ]
             },
             {
-                category: "Rice Pudding",
-                image: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?w=300&q=80",
+                category: "Koushiri",
                 items: [
-                    { id: "rp1", name: "Plain Rice Pudding", price: 40000 },
-                    { id: "rp2", name: "Belgian Lotus Pudding", price: 65000 },
-                    { id: "rp3", name: "Rice Pudding With Qeshta & Nuts", price: 75000 },
-                    { id: "rp4", name: "Rice Pudding And Nuts", price: 60000 },
-                    { id: "rp5", name: "Rice Pudding With Mango", price: 70000 },
-                    { id: "rp6", name: "ElMoadaba Nafr Helw", price: 85000 },
-                    { id: "rp7", name: "El Moadaba Special", price: 100000 },
-                    { id: "rp8", name: "El Moadaba Super Special", price: 120000 }
+                    { id: "k1", name: "Lotus", price: 250, image: "https://www.signlaban.com/_next/static/media/Koushiri%20Lotus.c3257ae8.png" },
+                    { id: "k2", name: "Nutella hazelnut", price: 270, image: "https://www.signlaban.com/_next/static/media/Nutella%20hazelnut.d0481c0a.png" },
+                    { id: "k3", name: "Pistachio", price: 290, image: "https://www.signlaban.com/_next/static/media/KoushiriPistachio.de8888db.png" }
                 ]
             },
             {
-                category: "Crepes",
-                image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=300&q=80",
+                category: "Ambalyh",
                 items: [
-                    { id: "cr1", name: "Dubai Crepe", price: 110000 },
-                    { id: "cr2", name: "Crep Bombastic", price: 140000 }
+                    { id: "am1", name: "Chocolate", price: 160, image: "https://www.signlaban.com/_next/static/media/Chocolate.b36bb03e.png" },
+                    { id: "am2", name: "Oreo", price: 150, image: "https://www.signlaban.com/_next/static/media/Oreo.e8ebb7e1.png" },
+                    { id: "am3", name: "Mango", price: 170, image: "https://www.signlaban.com/_next/static/media/AmbalyhMango.0f256035.png" },
+                    { id: "am4", name: "Lotus", price: 180, image: "https://www.signlaban.com/_next/static/media/AmbalyhLotus.170718d9.png" }
                 ]
             },
             {
-                category: "Qashtota",
-                image: "https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=300&q=80",
+                category: "Qashtuta",
                 items: [
-                    { id: "q1", name: "Qashtota Rice Pudding Cream", price: 90000 },
-                    { id: "q2", name: "Qashtota Rice Pudding Nuts", price: 105000 },
-                    { id: "q3", name: "Qashtota Rice Pudding Mango", price: 110000 },
-                    { id: "q4", name: "Qashtota Lotus Pudding Rice", price: 115000 },
-                    { id: "q5", name: "Qashtota Super Lux", price: 140000 },
-                    { id: "q6", name: "Creamy Qashtota Dish", price: 85000 },
-                    { id: "q7", name: "Qashtota Nuts Plate", price: 100000 },
-                    { id: "q8", name: "Qashtota Mango Dish", price: 105000 },
-                    { id: "q9", name: "Qashtota Lotus Dish", price: 110000 },
-                    { id: "q10", name: "Qashtota Caramel", price: 95000 },
-                    { id: "q11", name: "Remontada Mango", price: 125000 }
+                    { id: "qa1", name: "Nutella hazelnut", price: 210, image: "https://www.signlaban.com/_next/static/media/QashtutaNutellahazelnut.48e5558e.png" },
+                    { id: "qa2", name: "Lotus", price: 200, image: "https://www.signlaban.com/_next/static/media/QashtutaLotus.1b13aaf6.png" },
+                    { id: "qa3", name: "Mango", price: 190, image: "https://www.signlaban.com/_next/static/media/QashtutaMango.d073bb0a.png" },
+                    { id: "qa4", name: "Pistachio", price: 240, image: "https://www.signlaban.com/_next/static/media/QashtutaPistachio.90385a45.png" },
+                    { id: "qa5", name: "Banana Strawberry", price: 180, image: "https://www.signlaban.com/_next/static/media/Banana%20Strawberry.c1e6b63a.png" },
+                    { id: "qa6", name: "Anar Tender Coconut", price: 220, image: "https://www.signlaban.com/_next/static/media/Anar%20Tender%20Coconut.cdd70651.png" },
+                    { id: "qa7", name: "Mango Banana", price: 180, image: "https://www.signlaban.com/_next/static/media/Mango%20Banana.585036fb.png" },
+                    { id: "qa8", name: "Mango Strawberry", price: 190, image: "https://www.signlaban.com/_next/static/media/Mango%20Strawberry.cf51a05d.png" }
                 ]
             },
             {
-                category: "Koshari",
-                image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&q=80",
+                category: "Bambooza",
                 items: [
-                    { id: "k1", name: "Koshari Lotus Large", price: 120000 },
-                    { id: "k2", name: "Koshari Mango Large", price: 125000 },
-                    { id: "k3", name: "Koshari Nutella Large", price: 130000 },
-                    { id: "k4", name: "Koshary Pistachio Large", price: 145000 },
-                    { id: "k5", name: "Koshari Pistachio Lotus Large", price: 155000 },
-                    { id: "k6", name: "Koshari Kinder Large", price: 140000 },
-                    { id: "k7", name: "Koshari Lotus Small", price: 80000 },
-                    { id: "k8", name: "Koshari Mango Small", price: 85000 },
-                    { id: "k9", name: "Koshari Nutella Small", price: 90000 },
-                    { id: "k10", name: "Koshari Pistachio Small", price: 100000 },
-                    { id: "k11", name: "Koshari Kinder Small", price: 95000 },
-                    { id: "k12", name: "Koshari Lotus Pistachio Small", price: 110000 }
+                    { id: "b1", name: "Pistachio", price: 190, image: "https://www.signlaban.com/_next/static/media/Bambooza%20Pistachio.1157d06d.png" },
+                    { id: "b2", name: "Mango", price: 160, image: "https://www.signlaban.com/_next/static/media/Bambooza%20Mango.3bc07b52.png" },
+                    { id: "b3", name: "Lotus", price: 180, image: "https://www.signlaban.com/_next/static/media/Bambooza%20Lotus.628eb3b8.png" },
+                    { id: "b4", name: "Nutella", price: 170, image: "https://www.signlaban.com/_next/static/media/Bambooza%20Nutella.38c6c2eb.png" }
                 ]
             },
             {
-                category: "Umm Ali",
-                image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=300&q=80",
+                category: "Halibo",
                 items: [
-                    { id: "u1", name: "Umm Ali Baladi Ghee", price: 70000 },
-                    { id: "u2", name: "Umm Ali Ghee & Nuts", price: 95000 },
-                    { id: "u3", name: "Umm Ali Ghee & Qeshta", price: 105000 },
-                    { id: "u4", name: "Umm Ali Qeshta & Nuts", price: 120000 }
+                    { id: "h1", name: "Nutella", price: 150, image: "https://www.signlaban.com/_next/static/media/Halibo%20Nutella.0cca8a05.png" },
+                    { id: "h2", name: "Lotus", price: 160, image: "https://www.signlaban.com/_next/static/media/Halibo%20Lotus.6080eb9a.png" },
+                    { id: "h3", name: "Pistachio", price: 180, image: "https://www.signlaban.com/_next/static/media/Halibo%20Pistachio.2f92f56e.png" }
                 ]
             },
             {
-                category: "Bambouza",
-                image: "https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=300&q=80",
+                category: "Heba cake",
                 items: [
-                    { id: "b1", name: "Bambouza Small DLV", price: 50000 },
-                    { id: "b2", name: "Bambouza Large DLV", price: 90000 },
-                    { id: "b3", name: "Bambouza Small Nuts DLV", price: 70000 },
-                    { id: "b4", name: "Bambouza Large Nuts DLV", price: 120000 },
-                    { id: "b5", name: "Bambouza Small Qeshta DLV", price: 80000 },
-                    { id: "b6", name: "Bambouza Large Qeshta DLV", price: 130000 },
-                    { id: "b7", name: "Bambouza Small Lotus DLV", price: 85000 },
-                    { id: "b8", name: "Bambouza Large Lotus DLV", price: 140000 }
+                    { id: "hc1", name: "Pistachio belgium Choc", price: 320, image: "https://www.signlaban.com/_next/static/media/Pistachio%20belgium%20Chocolate.febbc91b.png" },
+                    { id: "hc2", name: "Pistachio Kinder Choc", price: 340, image: "https://www.signlaban.com/_next/static/media/Pistachio%20Kinder%20Chocolate.4cdd6983.png" }
                 ]
             },
             {
-                category: "Juices / Empo",
-                image: "https://images.unsplash.com/photo-1622597467836-f382495b4a7d?w=300&q=80",
+                category: "aseera",
                 items: [
-                    { id: "j1", name: "Empo Pistachio", price: 65000 },
-                    { id: "j2", name: "Empo Hazelnut", price: 60000 },
-                    { id: "j3", name: "Empo Chocolate", price: 55000 },
-                    { id: "j4", name: "Empo Lotus", price: 60000 },
-                    { id: "j5", name: "Empo Mango", price: 50000 },
-                    { id: "j6", name: "Empo Strawberry", price: 50000 },
-                    { id: "j7", name: "Empo Milk Mixed Berry", price: 60000 },
-                    { id: "j8", name: "Empo Milk Caramel", price: 55000 },
-                    { id: "j9", name: "Empo Gum", price: 45000 }
+                    { id: "as1", name: "Aseerathul pistachio", price: 140, image: "https://www.signlaban.com/_next/static/media/Aseerathul%20pistachio.0663c2a6.png" },
+                    { id: "as2", name: "Aseerathul lotus", price: 130, image: "https://www.signlaban.com/_next/static/media/Aseerathul%20lotus.72508cf7.png" },
+                    { id: "as3", name: "Aseerathul Nutella", price: 130, image: "https://www.signlaban.com/_next/static/media/Aseerathul%20Nutella.262a28c5.png" }
+                ]
+            },
+            {
+                category: "Lou’a",
+                items: [
+                    { id: "l1", name: "Nutella", price: 210, image: "https://www.signlaban.com/_next/static/media/Lou%E2%80%99a%20Nutella.d5657a3e.png" },
+                    { id: "l2", name: "Pistachio Lotus", price: 250, image: "https://www.signlaban.com/_next/static/media/Lou%E2%80%99a%20Pistachio%20Lotus.4f44b9b9.png" },
+                    { id: "l3", name: "Kinder", price: 230, image: "https://www.signlaban.com/_next/static/media/Lou%E2%80%99a%20Kinder.2a97a937.png" },
+                    { id: "l4", name: "Nutella Pistachio", price: 260, image: "https://www.signlaban.com/_next/static/media/Lou%27a%20Nutella%20Pistachio.3775f737.png" },
+                    { id: "l5", name: "Lotus", price: 220, image: "https://www.signlaban.com/_next/static/media/Lou%27a%20Lotus.f7b7cc3f.png" },
+                    { id: "l6", name: "Pistachio", price: 240, image: "https://www.signlaban.com/_next/static/media/Lou%27a%20Pistachio.550c9eaf.png" }
+                ]
+            },
+            {
+                category: "Crispy Umm Ali",
+                items: [
+                    { id: "cu1", name: "Pistachio", price: 250, image: "https://www.signlaban.com/_next/static/media/UmmAliPistachio.046fe961.png" },
+                    { id: "cu2", name: "Nutella", price: 230, image: "https://www.signlaban.com/_next/static/media/UmmAliNutella.3d2019f4.png" },
+                    { id: "cu3", name: "Lotus", price: 240, image: "https://www.signlaban.com/_next/static/media/UmmAliLotus.cb28c069.png" },
+                    { id: "cu4", name: "Pistachio Nutella", price: 270, image: "https://www.signlaban.com/_next/static/media/UmmAliPistachioNutella.c3bce802.png" },
+                    { id: "cu5", name: "Pistachio Lotus", price: 280, image: "https://www.signlaban.com/_next/static/media/UmmAliPistachioLotus.094a4a00.png" }
+                ]
+            },
+            {
+                category: "Ruh Hayati",
+                items: [
+                    { id: "rh1", name: "Nutella", price: 180, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" },
+                    { id: "rh2", name: "Lotus", price: 190, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" },
+                    { id: "rh3", name: "Pistachio", price: 210, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" },
+                    { id: "rh4", name: "Nutella Pistachio", price: 230, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" },
+                    { id: "rh5", name: "Nutella Lotus", price: 220, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" },
+                    { id: "rh6", name: "Pistachio Lotus", price: 240, image: "https://www.signlaban.com/_next/static/media/rohhayati.62a2e310.png" }
                 ]
             }
         ];
@@ -424,6 +439,7 @@
             menuContainer.innerHTML = '';
 
             menuData.forEach((cat, index) => {
+                // 1. Render Sticky Tabs
                 const tab = document.createElement('div');
                 tab.className = `tab ${index === 0 ? 'active' : ''}`;
                 tab.dataset.target = `cat-${index}`;
@@ -431,6 +447,7 @@
                 tab.onclick = () => scrollToCategory(`cat-${index}`);
                 navContainer.appendChild(tab);
 
+                // 2. Render Category Section
                 const section = document.createElement('div');
                 section.id = `cat-${index}`;
                 section.className = 'category-section';
@@ -440,19 +457,26 @@
                 title.innerText = cat.category;
                 section.appendChild(title);
 
+                // 3. Render Horizontal Scrolling Container
+                const scrollRow = document.createElement('div');
+                scrollRow.className = 'horizontal-scroll';
+
+                // 4. Render Vertical Cards inside the Row
                 cat.items.forEach(item => {
                     itemDetails[item.id] = item; 
                     
                     const card = document.createElement('div');
-                    card.className = 'item-card';
+                    card.className = 'vertical-card';
+                    // Store searchable text for the search function
+                    card.dataset.search = (item.name + " " + cat.category).toLowerCase();
+                    
                     card.innerHTML = `
-                        <div class="item-info">
-                            <div class="item-title">${item.name}</div>
-                            <!-- Formatted with commas for UZS -->
-                            <div class="price">${item.price.toLocaleString()} UZS</div>
-                        </div>
-                        <div class="item-media">
-                            <img src="${cat.image}" class="item-img" alt="${item.name}">
+                        <img src="${item.image}" class="card-img" alt="${item.name}">
+                        <div class="card-info">
+                            <div>
+                                <div class="card-title">${item.name}</div>
+                                <div class="card-price">₹${item.price}</div>
+                            </div>
                             <div class="add-btn-wrapper" id="btn-wrap-${item.id}">
                                 <div class="btn-add-text" onclick="updateCart('${item.id}', 1)">ADD</div>
                                 <div class="btn-controls">
@@ -463,16 +487,39 @@
                             </div>
                         </div>
                     `;
-                    section.appendChild(card);
+                    scrollRow.appendChild(card);
                 });
 
+                section.appendChild(scrollRow);
                 menuContainer.appendChild(section);
+            });
+        }
+
+        // Live Search Filtering Function
+        function searchMenu(query) {
+            const q = query.toLowerCase();
+            const sections = document.querySelectorAll('.category-section');
+            
+            sections.forEach(section => {
+                let hasVisibleCards = false;
+                const cards = section.querySelectorAll('.vertical-card');
+                
+                cards.forEach(card => {
+                    if (card.dataset.search.includes(q)) {
+                        card.style.display = 'flex';
+                        hasVisibleCards = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Hide the whole category if no items match the search
+                section.style.display = hasVisibleCards ? 'block' : 'none';
             });
         }
 
         function scrollToCategory(id) {
             isClickScrolling = true;
-            
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
                 if(tab.dataset.target === id) {
@@ -482,27 +529,28 @@
             });
 
             const element = document.getElementById(id);
-            const yOffset = -120; 
+            const yOffset = -150; 
             const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
             window.scrollTo({top: y, behavior: 'smooth'});
             
             if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-            
             setTimeout(() => { isClickScrolling = false; }, 800);
         }
 
         window.addEventListener('scroll', () => {
-            if (isClickScrolling) return; 
+            if (isClickScrolling || document.getElementById('searchInput').value !== '') return; 
 
             let current = '';
             const sections = document.querySelectorAll('.category-section');
-            const scrollPosition = window.scrollY + 130; 
+            const scrollPosition = window.scrollY + 160; 
 
             sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                    current = section.getAttribute('id');
+                if(section.style.display !== 'none') {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
                 }
             });
 
@@ -549,8 +597,7 @@
                 totalItems += cart[id];
             }
 
-            // Using toLocaleString() adds the commas (e.g., 120,000 UZS)
-            document.getElementById('cartTotalDisplay').innerText = totalAmount.toLocaleString() + ' UZS';
+            document.getElementById('cartTotalDisplay').innerText = '₹' + totalAmount.toLocaleString();
             document.getElementById('cartItemsDisplay').innerText = totalItems + (totalItems === 1 ? ' ITEM' : ' ITEMS');
 
             const cartBar = document.getElementById('cartBar');
@@ -567,7 +614,7 @@
 
             for (let id in cart) {
                 const item = itemDetails[id];
-                orderSummary.push(`${cart[id]}x ${item.name}`);
+                orderSummary.push(`${cart[id]}x ${item.name} (${cat.category})`);
                 totalAmount += (item.price * cart[id]);
             }
 
@@ -575,7 +622,7 @@
 
             const orderData = {
                 items: orderSummary.join('\n'),
-                total: totalAmount.toLocaleString() + ' UZS'
+                total: '₹' + totalAmount.toLocaleString()
             };
 
             tg.sendData(JSON.stringify(orderData));
