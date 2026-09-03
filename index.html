@@ -3,234 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HeyLaban | Egyptian Desserts</title>
+    <title>HeyLaban | Tashkent</title>
+    <!-- Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-gold: #d4af37;
-            --bg-color: #fdfbf7;
-            --card-bg: #ffffff;
-            --text-dark: #2c2c2c;
-            --text-muted: #888888;
-            --tg-theme-button-color: #d4af37;
+            /* Startup Dark Blue Theme */
+            --bg-dark: #070F2B;
+            --card-bg: #1B1A55;
+            --accent-blue: #535C91;
+            --neon-blue: #00E5FF;
+            --text-main: #FFFFFF;
+            --text-sub: #9290C3;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            padding-bottom: 90px; /* Space for checkout button */
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding-bottom: 110px; /* Space for the glass cart */
         }
 
-        /* Header Styling */
+        /* App Header */
         .header {
-            padding: 20px;
-            background: var(--card-bg);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            padding: 25px 20px 15px;
             position: sticky;
             top: 0;
+            background: rgba(7, 15, 43, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 10;
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: -0.5px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         .header span {
-            color: var(--primary-gold);
+            color: var(--neon-blue);
         }
 
         .header p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 5px;
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin-top: 4px;
         }
 
-        /* Category Tabs */
+        /* Modern Pill Tabs */
         .categories {
             display: flex;
             overflow-x: auto;
-            padding: 15px 20px;
-            gap: 15px;
-            background: var(--bg-color);
+            padding: 10px 20px 20px;
+            gap: 12px;
         }
 
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
+        .categories::-webkit-scrollbar { display: none; }
 
         .tab {
-            padding: 8px 20px;
+            padding: 10px 24px;
             background: var(--card-bg);
-            border: 1px solid #eaeaea;
-            border-radius: 20px;
+            border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text-sub);
             white-space: nowrap;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
 
         .tab.active {
-            background: var(--primary-gold);
-            color: #fff;
-            border-color: var(--primary-gold);
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
         }
 
-        /* Menu Items */
+        /* Product Cards */
         .menu-container {
             padding: 0 20px;
         }
 
         .category-section {
             display: none;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: swipeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        .category-section.active {
-            display: block;
+        .category-section.active { display: block; }
+
+        @keyframes swipeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .menu-item {
+        .item-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
             display: flex;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            gap: 16px;
+            align-items: center;
         }
 
         .item-img {
-            width: 85px;
-            height: 85px;
-            border-radius: 12px;
+            width: 90px;
+            height: 90px;
+            border-radius: 16px;
             object-fit: cover;
-            background-color: #eaeaea;
+            background-color: var(--accent-blue);
         }
 
-        .item-details {
+        .item-info {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
         .item-title {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             margin-bottom: 4px;
         }
 
         .item-desc {
-            font-size: 11px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: var(--text-sub);
             line-height: 1.4;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: 10px;
         }
 
-        .item-bottom {
+        .item-action {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .item-price {
+        .price {
             font-size: 15px;
-            font-weight: 700;
-            color: var(--primary-gold);
+            font-weight: 600;
+            color: var(--neon-blue);
         }
 
-        .add-btn {
-            background: var(--primary-gold);
-            color: #fff;
+        /* Interactive Cart Controls */
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            background: var(--bg-dark);
+            border-radius: 20px;
+            padding: 4px;
+        }
+
+        .qty-btn {
+            background: transparent;
+            color: var(--text-main);
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 20px;
-            font-weight: 600;
+            width: 28px;
+            height: 28px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
-            transition: transform 0.1s;
         }
 
-        .add-btn:active {
-            transform: scale(0.9);
+        .qty-add {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            border-radius: 50%;
+            font-weight: 800;
         }
 
-        /* Floating Checkout Button */
-        .checkout-bar {
+        .qty-display {
+            font-size: 14px;
+            font-weight: 600;
+            width: 24px;
+            text-align: center;
+            display: none;
+        }
+
+        .cart-controls.active .qty-display { display: block; }
+        .cart-controls.active .qty-minus { display: flex; }
+        .qty-minus { display: none; font-weight: 800; }
+
+        /* Glassmorphism Floating Cart */
+        .floating-cart {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px 20px;
-            background: var(--card-bg);
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(27, 26, 85, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 20;
+            transform: translateY(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .checkout-bar.visible {
+        .floating-cart.visible {
             transform: translateY(0);
         }
 
-        .cart-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-total {
+        .cart-text .total {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--neon-blue);
+            display: block;
         }
 
-        .cart-items-count {
+        .cart-text .items {
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--text-sub);
+            font-weight: 500;
         }
 
         .checkout-btn {
-            background: var(--text-dark);
-            color: #fff;
+            background: var(--neon-blue);
+            color: var(--bg-dark);
             border: none;
             padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
@@ -238,76 +253,85 @@
 
     <div class="header">
         <h1>Hey<span>Laban</span></h1>
-        <p>Premium Egyptian Desserts</p>
+        <p>Tashkent's Premium Dairy Experience</p>
     </div>
 
+    <!-- Scrollable Categories -->
     <div class="categories">
-        <div class="tab active" onclick="switchTab('qashtouta')">Qashtouta (قشطوطة)</div>
-        <div class="tab" onclick="switchTab('koshary')">Sweet Koshary (كشري حلو)</div>
-        <div class="tab" onclick="switchTab('specialties')">Specialties</div>
+        <div class="tab active" onclick="switchTab('milk-cakes')">Milk Cakes</div>
+        <div class="tab" onclick="switchTab('rice-puddings')">Rice Puddings</div>
+        <div class="tab" onclick="switchTab('ice-cream')">Ice Cream</div>
     </div>
 
     <div class="menu-container">
         
-        <div id="qashtouta" class="category-section active">
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=200&q=80" alt="Mango Qashtouta" class="item-img">
-                <div class="item-details">
-                    <div class="item-title">Mango Qashtouta</div>
-                    <div class="item-desc">Tres leches cake soaked in rich milk, topped with fresh mango pieces.</div>
-                    <div class="item-bottom">
-                        <span class="item-price">4.50 JOD</span>
-                        <button class="add-btn" onclick="addToCart('Mango Qashtouta', 4.50)">+</button>
+        <!-- Category: Milk Cakes -->
+        <div id="milk-cakes" class="category-section active">
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=200&q=80" alt="Tashkent Tres Leches" class="item-img">
+                <div class="item-info">
+                    <div class="item-title">Tashkent Tres Leches</div>
+                    <div class="item-desc">Signature sponge cake soaked in three types of rich local milk.</div>
+                    <div class="item-action">
+                        <span class="price">45,000 UZS</span>
+                        <div class="cart-controls" id="ctrl-tres">
+                            <button class="qty-btn qty-minus" onclick="updateCart('Tashkent Tres Leches', 45000, -1, 'ctrl-tres')">-</button>
+                            <span class="qty-display">0</span>
+                            <button class="qty-btn qty-add" onclick="updateCart('Tashkent Tres Leches', 45000, 1, 'ctrl-tres')">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80" alt="Pistachio Nutella" class="item-img">
-                <div class="item-details">
-                    <div class="item-title">Pistachio Nutella</div>
-                    <div class="item-desc">Milk-soaked sponge cake smothered in premium Pistachio cream and Nutella.</div>
-                    <div class="item-bottom">
-                        <span class="item-price">5.00 JOD</span>
-                        <button class="add-btn" onclick="addToCart('Pistachio Nutella Qashtouta', 5.00)">+</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="koshary" class="category-section">
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&q=80" alt="Lotus Koshary" class="item-img">
-                <div class="item-details">
-                    <div class="item-title">Lotus Biscoff Koshary</div>
-                    <div class="item-desc">Layers of creamy rice pudding, crispy kunafa, and rich Lotus Biscoff spread.</div>
-                    <div class="item-bottom">
-                        <span class="item-price">5.50 JOD</span>
-                        <button class="add-btn" onclick="addToCart('Lotus Koshary', 5.50)">+</button>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=200&q=80" alt="Kinder Koshary" class="item-img">
-                <div class="item-details">
-                    <div class="item-title">Kinder Chocolate Koshary</div>
-                    <div class="item-desc">Classic dessert bowl layered with custard, kunafa crunch, and melted Kinder chocolate.</div>
-                    <div class="item-bottom">
-                        <span class="item-price">6.00 JOD</span>
-                        <button class="add-btn" onclick="addToCart('Kinder Koshary', 6.00)">+</button>
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80" alt="Pistachio Milk Cake" class="item-img">
+                <div class="item-info">
+                    <div class="item-title">Pistachio Dream</div>
+                    <div class="item-desc">Premium milk cake draped in pure pistachio cream and crushed nuts.</div>
+                    <div class="item-action">
+                        <span class="price">55,000 UZS</span>
+                        <div class="cart-controls" id="ctrl-pistachio">
+                            <button class="qty-btn qty-minus" onclick="updateCart('Pistachio Dream', 55000, -1, 'ctrl-pistachio')">-</button>
+                            <span class="qty-display">0</span>
+                            <button class="qty-btn qty-add" onclick="updateCart('Pistachio Dream', 55000, 1, 'ctrl-pistachio')">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="specialties" class="category-section">
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=200&q=80" alt="Heba Cake" class="item-img">
-                <div class="item-details">
-                    <div class="item-title">Belgian Chocolate Heba Cake</div>
-                    <div class="item-desc">Moist cake layered with crispy pistachio-kunafa crunch, draped in Belgian chocolate.</div>
-                    <div class="item-bottom">
-                        <span class="item-price">4.00 JOD</span>
-                        <button class="add-btn" onclick="addToCart('Heba Cake', 4.00)">+</button>
+        <!-- Category: Rice Puddings -->
+        <div id="rice-puddings" class="category-section">
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&q=80" alt="Classic Roz bil Laban" class="item-img">
+                <div class="item-info">
+                    <div class="item-title">Classic Roz bil Laban</div>
+                    <div class="item-desc">Creamy, slow-cooked rice pudding topped with mixed nuts and honey.</div>
+                    <div class="item-action">
+                        <span class="price">35,000 UZS</span>
+                        <div class="cart-controls" id="ctrl-roz">
+                            <button class="qty-btn qty-minus" onclick="updateCart('Classic Roz bil Laban', 35000, -1, 'ctrl-roz')">-</button>
+                            <span class="qty-display">0</span>
+                            <button class="qty-btn qty-add" onclick="updateCart('Classic Roz bil Laban', 35000, 1, 'ctrl-roz')">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category: Ice Cream -->
+        <div id="ice-cream" class="category-section">
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=200&q=80" alt="B'laban Vanilla Mix" class="item-img">
+                <div class="item-info">
+                    <div class="item-title">HeyLaban Signature Swirl</div>
+                    <div class="item-desc">Thick, stretchy milk ice cream served with Lotus biscuit crumble.</div>
+                    <div class="item-action">
+                        <span class="price">40,000 UZS</span>
+                        <div class="cart-controls" id="ctrl-ice">
+                            <button class="qty-btn qty-minus" onclick="updateCart('Signature Swirl', 40000, -1, 'ctrl-ice')">-</button>
+                            <span class="qty-display">0</span>
+                            <button class="qty-btn qty-add" onclick="updateCart('Signature Swirl', 40000, 1, 'ctrl-ice')">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -315,36 +339,105 @@
 
     </div>
 
-    <div class="checkout-bar" id="checkoutBar">
-        <div class="cart-info">
-            <span class="cart-total" id="cartTotalDisplay">0.00 JOD</span>
-            <span class="cart-items-count" id="cartItemsDisplay">0 Items</span>
+    <!-- Glassmorphism Floating Cart -->
+    <div class="floating-cart" id="cartBar">
+        <div class="cart-text">
+            <span class="total" id="cartTotalDisplay">0 UZS</span>
+            <span class="items" id="cartItemsDisplay">0 items</span>
         </div>
-        <button class="checkout-btn" onclick="sendOrderToBot()">Pay with CliQ</button>
+        <button class="checkout-btn" onclick="checkout()">
+            Checkout
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
     </div>
 
     <script>
-        // Initialize Telegram Web App API
         const tg = window.Telegram.WebApp;
         tg.expand(); 
         tg.ready();
+        tg.setHeaderColor('#070F2B'); // Matches the dark blue app header
 
-        // Cart State
-        let cart = [];
-        let totalAmount = 0;
+        // Master Cart Object
+        let cart = {};
 
-        // Function to switch between categories smoothly
         function switchTab(categoryId) {
-            // Remove active state from all tabs and sections
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.category-section').forEach(s => s.classList.remove('active'));
-
-            // Add active state to clicked tab
             event.target.classList.add('active');
             document.getElementById(categoryId).classList.add('active');
+            
+            if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
-        // Function to add items to cart and show the checkout bar
-        function addToCart(itemName, itemPrice) {
-            cart.push(itemName);
-            totalAmount += itemPrice;
+        function updateCart(itemName, price, change, controlId) {
+            // Initialize item in cart if it doesn't exist
+            if (!cart[itemName]) {
+                cart[itemName] = { price: price, qty: 0 };
+            }
+
+            // Update Quantity
+            let newQty = cart[itemName].qty + change;
+            if (newQty < 0) newQty = 0;
+            cart[itemName].qty = newQty;
+
+            // Update UI for this specific item's buttons
+            const controlDiv = document.getElementById(controlId);
+            const qtyDisplay = controlDiv.querySelector('.qty-display');
+            
+            qtyDisplay.innerText = newQty;
+            
+            if (newQty > 0) {
+                controlDiv.classList.add('active');
+            } else {
+                controlDiv.classList.remove('active');
+                delete cart[itemName]; // Remove from cart if qty is 0
+            }
+
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            
+            refreshCartBar();
+        }
+
+        function refreshCartBar() {
+            let totalAmount = 0;
+            let totalItems = 0;
+
+            for (let item in cart) {
+                totalAmount += (cart[item].price * cart[item].qty);
+                totalItems += cart[item].qty;
+            }
+
+            // Format numbers with commas (e.g., 45,000)
+            document.getElementById('cartTotalDisplay').innerText = totalAmount.toLocaleString() + ' UZS';
+            document.getElementById('cartItemsDisplay').innerText = totalItems + (totalItems === 1 ? ' item' : ' items');
+
+            const cartBar = document.getElementById('cartBar');
+            if (totalItems > 0) {
+                cartBar.classList.add('visible');
+            } else {
+                cartBar.classList.remove('visible');
+            }
+        }
+
+        function checkout() {
+            let totalAmount = 0;
+            let orderSummary = [];
+
+            for (let item in cart) {
+                orderSummary.push(`${cart[item].qty}x ${item}`);
+                totalAmount += (cart[item].price * cart[item].qty);
+            }
+
+            if (orderSummary.length === 0) return;
+
+            const orderData = {
+                items: orderSummary.join('\n'),
+                total: totalAmount.toLocaleString() + ' UZS'
+            };
+
+            // Send to bot
+            tg.sendData(JSON.stringify(orderData));
+        }
+    </script>
+</body>
+</html>
