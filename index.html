@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cafe Demo Menu</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            /* Automatically uses the user's Telegram theme colors */
+            background-color: var(--tg-theme-bg-color, #ffffff); 
+            color: var(--tg-theme-text-color, #000000); 
+            padding: 20px; 
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .item { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 15px 0; }
+        .btn { 
+            background-color: var(--tg-theme-button-color, #2481cc); 
+            color: var(--tg-theme-button-text-color, #fff); 
+            border: none; padding: 15px 20px; border-radius: 8px; width: 100%; margin-top: 30px; font-size: 18px; font-weight: bold; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Demo Cafe</h2>
+        <p>Select your items</p>
+    </div>
+
+    <div class="item">
+        <span>☕ Iced Latte</span>
+        <span>3.00 JOD</span>
+    </div>
+    <div class="item">
+        <span>🥐 Fresh Croissant</span>
+        <span>2.00 JOD</span>
+    </div>
+    
+    <button class="btn" onclick="sendOrder()">Checkout (5.00 JOD)</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Opens the app in full screen
+
+        function sendOrder() {
+            const orderData = {
+                items: "1x Iced Latte, 1x Croissant",
+                total: "5.00 JOD"
+            };
+            // Sends the data invisibly back to the chat bot, then closes the app
+            tg.sendData(JSON.stringify(orderData));
+        }
+    </script>
+</body>
+</html>
