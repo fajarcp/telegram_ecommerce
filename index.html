@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HeyLaban | Tashkent</title>
+    <title>B.Laban | Delivery</title>
     <!-- Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Modern Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Startup Dark Blue Theme */
-            --bg-dark: #070F2B;
-            --card-bg: #1B1A55;
-            --accent-blue: #535C91;
-            --neon-blue: #00E5FF;
-            --text-main: #FFFFFF;
-            --text-sub: #9290C3;
+            --bg-color: #ffffff;
+            --text-dark: #1c1c1c;
+            --text-muted: #7e7e7e;
+            --border-color: #f0f0f5;
+            --blue-accent: #0050ff; /* Swatch Blue */
+            --green-success: #16b33c;
         }
 
         * {
@@ -29,387 +27,494 @@
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            padding-bottom: 110px; /* Space for the glass cart */
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-bottom: 100px;
         }
 
-        /* App Header */
+        /* Swiggy-Style Header */
         .header {
-            padding: 25px 20px 15px;
+            padding: 15px 15px 5px;
+            background: var(--bg-color);
             position: sticky;
             top: 0;
-            background: rgba(7, 15, 43, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 10;
+            z-index: 20;
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .header span {
-            color: var(--neon-blue);
+            color: var(--blue-accent);
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 13px;
-            color: var(--text-sub);
-            font-weight: 500;
-            margin-top: 4px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
         }
 
-        /* Modern Pill Tabs */
+        /* Sticky Horizontal Categories */
         .categories {
             display: flex;
             overflow-x: auto;
-            padding: 10px 20px 20px;
-            gap: 12px;
+            padding: 15px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 55px; /* Sits right under header */
+            z-index: 20;
+            gap: 20px;
         }
 
         .categories::-webkit-scrollbar { display: none; }
 
         .tab {
-            padding: 10px 24px;
-            background: var(--card-bg);
-            border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-sub);
+            color: var(--text-muted);
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
+            padding-bottom: 8px;
+            position: relative;
         }
 
         .tab.active {
-            background: rgba(0, 229, 255, 0.1);
-            color: var(--neon-blue);
-            border: 1px solid var(--neon-blue);
+            color: var(--text-dark);
         }
 
-        /* Product Cards */
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--blue-accent);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Menu Container & Items */
         .menu-container {
-            padding: 0 20px;
+            padding: 0 15px;
         }
 
-        .category-section {
-            display: none;
-            animation: swipeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .category-section.active { display: block; }
-
-        @keyframes swipeIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        .category-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 25px 0 15px;
+            color: var(--text-dark);
         }
 
         .item-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 16px;
             display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .item-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 16px;
-            object-fit: cover;
-            background-color: var(--accent-blue);
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px dashed #e4e4e4;
+            gap: 15px;
         }
 
         .item-info {
             flex: 1;
         }
 
-        .item-title {
-            font-size: 16px;
-            font-weight: 600;
+        .item-type {
+            font-size: 10px;
+            color: var(--blue-accent);
+            font-weight: 700;
+            text-transform: uppercase;
             margin-bottom: 4px;
-        }
-
-        .item-desc {
-            font-size: 12px;
-            color: var(--text-sub);
-            line-height: 1.4;
-            margin-bottom: 10px;
-        }
-
-        .item-action {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 4px;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 6px;
         }
 
         .price {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--neon-blue);
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
 
-        /* Interactive Cart Controls */
-        .cart-controls {
+        /* Swiggy-Style Image & Add Button */
+        .item-media {
+            position: relative;
+            width: 110px;
+            height: 110px;
+        }
+
+        .item-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 12px;
+            object-fit: cover;
+            background-color: #f8f8f8;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* The overlapping ADD button */
+        .add-btn-wrapper {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 36px;
+            background: #fff;
+            border: 1px solid #e2e2e7;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
-            background: var(--bg-dark);
-            border-radius: 20px;
-            padding: 4px;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.2s;
         }
 
-        .qty-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: none;
-            width: 28px;
-            height: 28px;
-            font-size: 18px;
+        .btn-add-text {
+            color: var(--blue-accent);
+            font-weight: 800;
+            font-size: 14px;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            text-transform: uppercase;
         }
 
-        .qty-add {
-            background: var(--neon-blue);
-            color: var(--bg-dark);
-            border-radius: 50%;
-            font-weight: 800;
-        }
-
-        .qty-display {
-            font-size: 14px;
-            font-weight: 600;
-            width: 24px;
-            text-align: center;
+        .btn-controls {
             display: none;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .cart-controls.active .qty-display { display: block; }
-        .cart-controls.active .qty-minus { display: flex; }
-        .qty-minus { display: none; font-weight: 800; }
+        .add-btn-wrapper.active {
+            border-color: var(--blue-accent);
+            background: #f4f7ff;
+        }
 
-        /* Glassmorphism Floating Cart */
-        .floating-cart {
+        .add-btn-wrapper.active .btn-add-text { display: none; }
+        .add-btn-wrapper.active .btn-controls { display: flex; }
+
+        .ctrl-btn {
+            width: 30px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--blue-accent);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .ctrl-qty {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--blue-accent);
+        }
+
+        /* Swiggy Style Checkout Bar */
+        .checkout-bar {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: rgba(27, 26, 85, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 16px 20px;
+            left: 15px;
+            right: 15px;
+            background: var(--blue-accent);
+            color: #fff;
+            border-radius: 12px;
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transform: translateY(150%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.3s ease;
             z-index: 50;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 20px rgba(0, 80, 255, 0.3);
+            cursor: pointer;
         }
 
-        .floating-cart.visible {
+        .checkout-bar.visible {
             transform: translateY(0);
         }
 
-        .cart-text .total {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--neon-blue);
-            display: block;
+        .cart-details {
+            display: flex;
+            flex-direction: column;
         }
 
-        .cart-text .items {
-            font-size: 12px;
-            color: var(--text-sub);
-            font-weight: 500;
-        }
-
-        .checkout-btn {
-            background: var(--neon-blue);
-            color: var(--bg-dark);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 16px;
+        .cart-items-text { font-size: 12px; font-weight: 600; opacity: 0.9; }
+        .cart-total-text { font-size: 16px; font-weight: 800; }
+        
+        .checkout-action {
             font-size: 15px;
             font-weight: 700;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Hey<span>Laban</span></h1>
-        <p>Tashkent's Premium Dairy Experience</p>
+        <h1>B.Laban</h1>
+        <p>Premium Egyptian Desserts</p>
     </div>
 
-    <!-- Scrollable Categories -->
-    <div class="categories">
-        <div class="tab active" onclick="switchTab('milk-cakes')">Milk Cakes</div>
-        <div class="tab" onclick="switchTab('rice-puddings')">Rice Puddings</div>
-        <div class="tab" onclick="switchTab('ice-cream')">Ice Cream</div>
-    </div>
+    <!-- Categories generated by JS -->
+    <div class="categories" id="categoryNav"></div>
 
-    <div class="menu-container">
-        
-        <!-- Category: Milk Cakes -->
-        <div id="milk-cakes" class="category-section active">
-            <div class="item-card">
-                <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=200&q=80" alt="Tashkent Tres Leches" class="item-img">
-                <div class="item-info">
-                    <div class="item-title">Tashkent Tres Leches</div>
-                    <div class="item-desc">Signature sponge cake soaked in three types of rich local milk.</div>
-                    <div class="item-action">
-                        <span class="price">45,000 UZS</span>
-                        <div class="cart-controls" id="ctrl-tres">
-                            <button class="qty-btn qty-minus" onclick="updateCart('Tashkent Tres Leches', 45000, -1, 'ctrl-tres')">-</button>
-                            <span class="qty-display">0</span>
-                            <button class="qty-btn qty-add" onclick="updateCart('Tashkent Tres Leches', 45000, 1, 'ctrl-tres')">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="item-card">
-                <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80" alt="Pistachio Milk Cake" class="item-img">
-                <div class="item-info">
-                    <div class="item-title">Pistachio Dream</div>
-                    <div class="item-desc">Premium milk cake draped in pure pistachio cream and crushed nuts.</div>
-                    <div class="item-action">
-                        <span class="price">55,000 UZS</span>
-                        <div class="cart-controls" id="ctrl-pistachio">
-                            <button class="qty-btn qty-minus" onclick="updateCart('Pistachio Dream', 55000, -1, 'ctrl-pistachio')">-</button>
-                            <span class="qty-display">0</span>
-                            <button class="qty-btn qty-add" onclick="updateCart('Pistachio Dream', 55000, 1, 'ctrl-pistachio')">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Menu Items generated by JS -->
+    <div class="menu-container" id="menuContainer"></div>
+
+    <!-- Bottom Cart Bar -->
+    <div class="checkout-bar" id="cartBar" onclick="checkout()">
+        <div class="cart-details">
+            <span class="cart-items-text" id="cartItemsDisplay">1 ITEM</span>
+            <span class="cart-total-text" id="cartTotalDisplay">0 EGP</span>
         </div>
-
-        <!-- Category: Rice Puddings -->
-        <div id="rice-puddings" class="category-section">
-            <div class="item-card">
-                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&q=80" alt="Classic Roz bil Laban" class="item-img">
-                <div class="item-info">
-                    <div class="item-title">Classic Roz bil Laban</div>
-                    <div class="item-desc">Creamy, slow-cooked rice pudding topped with mixed nuts and honey.</div>
-                    <div class="item-action">
-                        <span class="price">35,000 UZS</span>
-                        <div class="cart-controls" id="ctrl-roz">
-                            <button class="qty-btn qty-minus" onclick="updateCart('Classic Roz bil Laban', 35000, -1, 'ctrl-roz')">-</button>
-                            <span class="qty-display">0</span>
-                            <button class="qty-btn qty-add" onclick="updateCart('Classic Roz bil Laban', 35000, 1, 'ctrl-roz')">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="checkout-action">
+            View Cart
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
-
-        <!-- Category: Ice Cream -->
-        <div id="ice-cream" class="category-section">
-            <div class="item-card">
-                <img src="https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=200&q=80" alt="B'laban Vanilla Mix" class="item-img">
-                <div class="item-info">
-                    <div class="item-title">HeyLaban Signature Swirl</div>
-                    <div class="item-desc">Thick, stretchy milk ice cream served with Lotus biscuit crumble.</div>
-                    <div class="item-action">
-                        <span class="price">40,000 UZS</span>
-                        <div class="cart-controls" id="ctrl-ice">
-                            <button class="qty-btn qty-minus" onclick="updateCart('Signature Swirl', 40000, -1, 'ctrl-ice')">-</button>
-                            <span class="qty-display">0</span>
-                            <button class="qty-btn qty-add" onclick="updateCart('Signature Swirl', 40000, 1, 'ctrl-ice')">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Glassmorphism Floating Cart -->
-    <div class="floating-cart" id="cartBar">
-        <div class="cart-text">
-            <span class="total" id="cartTotalDisplay">0 UZS</span>
-            <span class="items" id="cartItemsDisplay">0 items</span>
-        </div>
-        <button class="checkout-btn" onclick="checkout()">
-            Checkout
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); 
         tg.ready();
-        tg.setHeaderColor('#070F2B'); // Matches the dark blue app header
+        tg.setHeaderColor('#ffffff'); // White header to match Swiggy/Zomato style
 
-        // Master Cart Object
-        let cart = {};
+        // Menu Data - Structured like a real app backend
+        // Standardized placeholder prices used for the demo
+        const menuData = [
+            {
+                category: "Cakes",
+                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&q=80",
+                items: [
+                    { id: "c1", name: "Heba Dubai Chocolate medium", price: 120, search: "https://www.google.com/search?tbm=isch&q=Blaban+Heba+Dubai+Chocolate+medium" },
+                    { id: "c2", name: "Hiba Dubai Kinder medium", price: 130, search: "https://www.google.com/search?tbm=isch&q=Blaban+Hiba+Dubai+Kinder+medium" },
+                    { id: "c3", name: "Mini Kabsa", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+Mini+Kabsa" },
+                    { id: "c4", name: "Fazea Chocola Cake Small", price: 75, search: "https://www.google.com/search?tbm=isch&q=Blaban+Fazea+Chocola+Cake+Small" },
+                    { id: "c5", name: "Khalthy Matilda / Aunt Matilda Small", price: 90, search: "https://www.google.com/search?tbm=isch&q=Blaban+Aunt+Matilda+Small" },
+                    { id: "c6", name: "ElKashkha Small", price: 80, search: "https://www.google.com/search?tbm=isch&q=Blaban+ElKashkha+Small" },
+                    { id: "c7", name: "El Metkandra Small", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+El+Metkandra+Small" },
+                    { id: "c8", name: "Sankoreeta Large", price: 150, search: "https://www.google.com/search?tbm=isch&q=Blaban+Sankoreeta+Large" }
+                ]
+            },
+            {
+                category: "Rice Pudding",
+                image: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?w=300&q=80",
+                items: [
+                    { id: "rp1", name: "Plain Rice Pudding", price: 40, search: "https://www.google.com/search?tbm=isch&q=Blaban+Plain+Rice+Pudding" },
+                    { id: "rp2", name: "Belgian Lotus Pudding Rice", price: 65, search: "https://www.google.com/search?tbm=isch&q=Blaban+Belgian+Lotus+Pudding+Rice" },
+                    { id: "rp3", name: "Rice Pudding With Qeshta And Nuts", price: 75, search: "https://www.google.com/search?tbm=isch&q=Blaban+Rice+Pudding+Qeshta+Nuts" },
+                    { id: "rp4", name: "Rice Pudding And Nuts", price: 60, search: "https://www.google.com/search?tbm=isch&q=Blaban+Rice+Pudding+Nuts" },
+                    { id: "rp5", name: "Rice Pudding With Mango", price: 70, search: "https://www.google.com/search?tbm=isch&q=Blaban+Rice+Pudding+Mango" },
+                    { id: "rp6", name: "ElMoadaba Nafr Helw", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+ElMoadaba+Nafr+Helw" },
+                    { id: "rp7", name: "El Moadaba Nafr Helw Special", price: 100, search: "https://www.google.com/search?tbm=isch&q=Blaban+El+Moadaba+Nafr+Helw+Special" },
+                    { id: "rp8", name: "El Moadaba Nafr Helw Super Special", price: 120, search: "https://www.google.com/search?tbm=isch&q=Blaban+El+Moadaba+Nafr+Helw+Super+Special" }
+                ]
+            },
+            {
+                category: "Crepes",
+                image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=300&q=80",
+                items: [
+                    { id: "cr1", name: "Dubai Crepe", price: 110, search: "https://www.google.com/search?tbm=isch&q=Blaban+Dubai+Crepe" },
+                    { id: "cr2", name: "Crep Bombastic", price: 140, search: "https://www.google.com/search?tbm=isch&q=Blaban+Crep+Bombastic" }
+                ]
+            },
+            {
+                category: "Qashtota",
+                image: "https://images.unsplash.com/photo-1464195244916-405fa0a82545?w=300&q=80",
+                items: [
+                    { id: "q1", name: "Qashtota Rice Pudding Cream", price: 90, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Rice+Pudding+Cream" },
+                    { id: "q2", name: "Qashtota Rice Pudding Nuts", price: 105, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Rice+Pudding+Nuts" },
+                    { id: "q3", name: "Qashtota Rice Pudding Mango", price: 110, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Rice+Pudding+Mango" },
+                    { id: "q4", name: "Qashtota Lotus Pudding Rice", price: 115, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Lotus+Pudding+Rice" },
+                    { id: "q5", name: "Qashtota Super Lux", price: 140, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Super+Lux" },
+                    { id: "q6", name: "Creamy Qashtota Dish", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+Creamy+Qashtota+Dish" },
+                    { id: "q7", name: "Qashtota Nuts Plate", price: 100, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Nuts+Plate" },
+                    { id: "q8", name: "Qashtota Mango Dish", price: 105, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Mango" },
+                    { id: "q9", name: "Qashtota Lotus Dish", price: 110, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Lotus+Dish" },
+                    { id: "q10", name: "Qashtota Caramel", price: 95, search: "https://www.google.com/search?tbm=isch&q=Blaban+Qashtota+Caramel" },
+                    { id: "q11", name: "Remontada Mango", price: 125, search: "https://www.google.com/search?tbm=isch&q=Blaban+Remontada+Mango" }
+                ]
+            },
+            {
+                category: "Koshari",
+                image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&q=80",
+                items: [
+                    { id: "k1", name: "Koshari Lotus Large", price: 120, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Lotus+Large" },
+                    { id: "k2", name: "Koshari Mango Large", price: 125, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Mango+Large" },
+                    { id: "k3", name: "Koshari Nutella Large", price: 130, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Nutella+Large" },
+                    { id: "k4", name: "Koshary Pistachio Large", price: 145, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshary+Pistachio+Large" },
+                    { id: "k5", name: "Koshari Pistachio Lotus Large", price: 155, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Pistachio+Lotus+Large" },
+                    { id: "k6", name: "Koshari Kinder Large", price: 140, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Kinder+Large" },
+                    { id: "k7", name: "Koshari Lotus Small", price: 80, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Lotus+Small" },
+                    { id: "k8", name: "Koshari Mango Small", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Mango+Small" },
+                    { id: "k9", name: "Koshari Nutella Small", price: 90, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Nutella+Small" },
+                    { id: "k10", name: "Koshari Pistachio Small", price: 100, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Pistachio+Small" },
+                    { id: "k11", name: "Koshari Kinder Small", price: 95, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Kinder+Small" },
+                    { id: "k12", name: "Koshari Lotus Pistachio Small", price: 110, search: "https://www.google.com/search?tbm=isch&q=Blaban+Koshari+Lotus+Pistachio+Small" }
+                ]
+            },
+            {
+                category: "Umm Ali",
+                image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=300&q=80",
+                items: [
+                    { id: "u1", name: "Umm Ali Casserole With Baladi Ghee", price: 70, search: "https://www.google.com/search?tbm=isch&q=Blaban+Umm+Ali+Casserole+Baladi+Ghee" },
+                    { id: "u2", name: "Umm Ali Casserole With Baladi Ghee And Nuts", price: 95, search: "https://www.google.com/search?tbm=isch&q=Blaban+Umm+Ali+Casserole+Ghee+Nuts" },
+                    { id: "u3", name: "Umm Ali Casserole With Baladi Ghee And Qeshta", price: 105, search: "https://www.google.com/search?tbm=isch&q=Blaban+Umm+Ali+Casserole+Ghee+Qeshta" },
+                    { id: "u4", name: "Umm Ali Casserole Qeshta And Nuts", price: 120, search: "https://www.google.com/search?tbm=isch&q=Blaban+Umm+Ali+Casserole+Qeshta+Nuts" }
+                ]
+            },
+            {
+                category: "Bambouza",
+                image: "https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=300&q=80",
+                items: [
+                    { id: "b1", name: "Bambouza Small DLV", price: 50, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Small" },
+                    { id: "b2", name: "Bambouza Large DLV", price: 90, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Large" },
+                    { id: "b3", name: "Bambouza Small Nuts DLV", price: 70, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Small+Nuts" },
+                    { id: "b4", name: "Bambouza Large Nuts DLV", price: 120, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Large+Nuts" },
+                    { id: "b5", name: "Bambouza Small Qeshta DLV", price: 80, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Small+Qeshta" },
+                    { id: "b6", name: "Bambouza Large Qeshta DLV", price: 130, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Large+Qeshta" },
+                    { id: "b7", name: "Bambouza Small Lotus DLV", price: 85, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Small+Lotus" },
+                    { id: "b8", name: "Bambouza Large Lotus DLV", price: 140, search: "https://www.google.com/search?tbm=isch&q=Blaban+Bambouza+Large+Lotus" }
+                ]
+            },
+            {
+                category: "Juices / Empo",
+                image: "https://images.unsplash.com/photo-1622597467836-f382495b4a7d?w=300&q=80",
+                items: [
+                    { id: "j1", name: "Empo Pistachio", price: 65, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Pistachio" },
+                    { id: "j2", name: "Empo Hazelnut", price: 60, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Hazelnut" },
+                    { id: "j3", name: "Empo Chocolate", price: 55, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Chocolate" },
+                    { id: "j4", name: "Empo Lotus", price: 60, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Lotus" },
+                    { id: "j5", name: "Empo Mango", price: 50, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Mango" },
+                    { id: "j6", name: "Empo Strawberry", price: 50, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Strawberry" },
+                    { id: "j7", name: "Empo Milk Mixed Berry", price: 60, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Milk+Mixed+Berry" },
+                    { id: "j8", name: "Empo Milk Caramel", price: 55, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Milk+Caramel" },
+                    { id: "j9", name: "Empo Gum", price: 45, search: "https://www.google.com/search?tbm=isch&q=Blaban+Empo+Gum" }
+                ]
+            }
+        ];
 
-        function switchTab(categoryId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.category-section').forEach(s => s.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(categoryId).classList.add('active');
+        let cart = {}; // Master Cart state
+        let itemDetails = {}; // Quick lookup map
+
+        function renderApp() {
+            const navContainer = document.getElementById('categoryNav');
+            const menuContainer = document.getElementById('menuContainer');
             
+            navContainer.innerHTML = '';
+            menuContainer.innerHTML = '';
+
+            menuData.forEach((cat, index) => {
+                // 1. Build Category Navigation Tabs
+                const tab = document.createElement('div');
+                tab.className = `tab ${index === 0 ? 'active' : ''}`;
+                tab.innerText = cat.category;
+                tab.onclick = () => scrollToCategory(`cat-${index}`);
+                navContainer.appendChild(tab);
+
+                // 2. Build Menu Sections
+                const section = document.createElement('div');
+                section.id = `cat-${index}`;
+                
+                const title = document.createElement('h2');
+                title.className = 'category-title';
+                title.innerText = cat.category;
+                section.appendChild(title);
+
+                // 3. Build Items
+                cat.items.forEach(item => {
+                    itemDetails[item.id] = item; // Save for cart reference
+                    
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-type">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+                                B.LABAN
+                            </div>
+                            <div class="item-title">${item.name}</div>
+                            <div class="price">${item.price} EGP</div>
+                        </div>
+                        <div class="item-media">
+                            <img src="${cat.image}" class="item-img" onclick="window.open('${item.search}', '_blank')" alt="${item.name}">
+                            <div class="add-btn-wrapper" id="btn-wrap-${item.id}">
+                                <div class="btn-add-text" onclick="updateCart('${item.id}', 1)">ADD</div>
+                                <div class="btn-controls">
+                                    <button class="ctrl-btn" onclick="updateCart('${item.id}', -1)">-</button>
+                                    <span class="ctrl-qty" id="qty-${item.id}">0</span>
+                                    <button class="ctrl-btn" onclick="updateCart('${item.id}', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    section.appendChild(card);
+                });
+
+                menuContainer.appendChild(section);
+            });
+        }
+
+        function scrollToCategory(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
             if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
-        function updateCart(itemName, price, change, controlId) {
-            // Initialize item in cart if it doesn't exist
-            if (!cart[itemName]) {
-                cart[itemName] = { price: price, qty: 0 };
-            }
-
-            // Update Quantity
-            let newQty = cart[itemName].qty + change;
+        function updateCart(itemId, change) {
+            if (!cart[itemId]) cart[itemId] = 0;
+            
+            let newQty = cart[itemId] + change;
             if (newQty < 0) newQty = 0;
-            cart[itemName].qty = newQty;
+            cart[itemId] = newQty;
 
-            // Update UI for this specific item's buttons
-            const controlDiv = document.getElementById(controlId);
-            const qtyDisplay = controlDiv.querySelector('.qty-display');
+            // Update UI for the ADD button
+            const wrap = document.getElementById(`btn-wrap-${itemId}`);
+            const qtyDisplay = document.getElementById(`qty-${itemId}`);
             
             qtyDisplay.innerText = newQty;
             
             if (newQty > 0) {
-                controlDiv.classList.add('active');
+                wrap.classList.add('active');
             } else {
-                controlDiv.classList.remove('active');
-                delete cart[itemName]; // Remove from cart if qty is 0
+                wrap.classList.remove('active');
+                delete cart[itemId];
             }
 
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            
-            refreshCartBar();
+            refreshCartUI();
         }
 
-        function refreshCartBar() {
+        function refreshCartUI() {
             let totalAmount = 0;
             let totalItems = 0;
 
-            for (let item in cart) {
-                totalAmount += (cart[item].price * cart[item].qty);
-                totalItems += cart[item].qty;
+            for (let id in cart) {
+                totalAmount += (itemDetails[id].price * cart[id]);
+                totalItems += cart[id];
             }
 
-            // Format numbers with commas (e.g., 45,000)
-            document.getElementById('cartTotalDisplay').innerText = totalAmount.toLocaleString() + ' UZS';
-            document.getElementById('cartItemsDisplay').innerText = totalItems + (totalItems === 1 ? ' item' : ' items');
+            document.getElementById('cartTotalDisplay').innerText = totalAmount + ' EGP';
+            document.getElementById('cartItemsDisplay').innerText = totalItems + (totalItems === 1 ? ' ITEM' : ' ITEMS');
 
             const cartBar = document.getElementById('cartBar');
             if (totalItems > 0) {
@@ -423,21 +528,24 @@
             let totalAmount = 0;
             let orderSummary = [];
 
-            for (let item in cart) {
-                orderSummary.push(`${cart[item].qty}x ${item}`);
-                totalAmount += (cart[item].price * cart[item].qty);
+            for (let id in cart) {
+                const item = itemDetails[id];
+                orderSummary.push(`${cart[id]}x ${item.name}`);
+                totalAmount += (item.price * cart[id]);
             }
 
             if (orderSummary.length === 0) return;
 
             const orderData = {
                 items: orderSummary.join('\n'),
-                total: totalAmount.toLocaleString() + ' UZS'
+                total: totalAmount + ' EGP'
             };
 
-            // Send to bot
             tg.sendData(JSON.stringify(orderData));
         }
+
+        // Initialize App
+        renderApp();
     </script>
 </body>
 </html>
